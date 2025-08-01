@@ -1,0 +1,5 @@
+uploaded_images/
+*.log
+*.vscode
+__pycache__/
+*.pyc

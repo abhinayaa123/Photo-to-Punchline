@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎨 Pazhamcholl Cartoon Generator 🎭</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@300;400;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #FFD700, #FF8C00, #FF6347);
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      box-shadow: 
+        0 20px 40px rgba(255, 140, 0, 0.3),
+        0 0 0 1px rgba(255, 215, 0, 0.2),
+        inset 0 0 30px rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      width: 450px;
+      position: relative;
+      animation: containerFloat 6s ease-in-out infinite;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes containerFloat {
+      0%, 100% { transform: translateY(0px) rotateX(0deg); }
+      50% { transform: translateY(-10px) rotateX(2deg); }
+    }
+
+    .container::before {
+      content: '✨';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 30px;
+      animation: sparkle 2s ease-in-out infinite;
+    }
+
+    .container::after {
+      content: '🎪';
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      font-size: 35px;
+      animation: bounce 3s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { transform: rotate(0deg) scale(1); opacity: 0.8; }
+      50% { transform: rotate(180deg) scale(1.3); opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-5px) rotate(-10deg); }
+      75% { transform: translateY(-2px) rotate(10deg); }
+    }
+
+    .title {
+      font-family: 'Fredoka One', cursive;
+      font-size: 28px;
+      text-align: center;
+      background: linear-gradient(45deg, #FF6B35, #F7931E, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 30px;
+      animation: titlePulse 3s ease-in-out infinite;
+      text-shadow: 2px 2px 4px rgba(255, 140, 0, 0.3);
+    }
+
+    @keyframes titlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .tabs {
+      display: flex;
+      background: linear-gradient(135deg, #FFE066, #FFCC02);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 20px rgba(255, 204, 2, 0.4);
+      position: relative;
+    }
+
+    .tabs::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 3s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 15px 0;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      overflow: hidden;
+      color: #FF6B35;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    .tab:hover {
+      transform: translateY(-2px);
+      color: #FF4500;
+    }
+
+    .tab.active {
+      background: linear-gradient(135deg, #FF6B35, #FF4500);
+      color: white;
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(255, 69, 0, 0.4);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .tab.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: activeShine 2s ease-in-out infinite;
+    }
+
+    @keyframes activeShine {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    .tab-content {
+      display: none;
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    video, img {
+      max-width: 100%;
+      margin-top: 15px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(255, 140, 0, 0.3);
+      transition: all 0.3s ease;
+      border: 3px solid transparent;
+      background: linear-gradient(white, white) padding-box,
+                  linear-gradient(45deg, #FFD700, #FF8C00) border-box;
+    }
+
+    video:hover, img:hover {
+      transform: scale(1.03) rotate(1deg);
+      box-shadow: 0 12px 35px rgba(255, 140, 0, 0.5);
+    }
+
+    input[type="file"] {
+      margin-top: 20px;
+      padding: 12px;
+      border: 2px dashed #FF8C00;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #FFF8DC, #FFEBCD);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      color: #FF6B35;
+    }
+
+    input[type="file"]:hover {
+      border-color: #FF6B35;
+      background: linear-gradient(135deg, #FFEBCD, #FFE4B5);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 140, 0, 0.3);
+    }
+
+    .image-preview-container {
+      margin-top: 20px;
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(255, 140, 0, 0.3);
+      border: 3px solid transparent;
+      background: linear-gradient(white, white) padding-box,
+                  linear-gradient(45deg, #FFD700, #FF8C00) border-box;
+      animation: previewAppear 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes previewAppear {
+      from { 
+        opacity: 0; 
+        transform: scale(0.8) rotateY(90deg); 
+      }
+      to { 
+        opacity: 1; 
+        transform: scale(1) rotateY(0deg); 
+      }
+    }
+
+    #previewImage, #capturedWebcamImage {
+      width: 300px;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    #previewImage {
+      width: 100%;
+      max-height: 250px;
+    }
+
+    .image-preview-container:hover #previewImage, #capturedWebcamImage:hover {
+      transform: scale(1.02);
+    }
+
+    .preview-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(255, 107, 53, 0.9), transparent);
+      padding: 15px;
+      transform: translateY(100%);
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .image-preview-container:hover .preview-overlay {
+      transform: translateY(0);
+    }
+
+    .preview-text {
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      display: block;
+      text-align: center;
+      animation: sparkleText 2s ease-in-out infinite;
+    }
+
+    @keyframes sparkleText {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .capture-btn {
+      background: linear-gradient(135deg, #FF6B35, #FF8C00);
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .capture-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
+    }
+
+    .capture-btn:active {
+      transform: translateY(-1px) scale(0.98);
+    }
+
+    .capture-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transition: all 0.6s ease;
+      transform: translate(-50%, -50%);
+    }
+
+    .capture-btn:active::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    #submitBtn {
+      background: linear-gradient(135deg, #FFD700, #FF8C00, #FF6B35);
+      background-size: 200% 200%;
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      margin-top: 30px;
+      width: 100%;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 8px 25px rgba(255, 140, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+      animation: gradientMove 3s ease infinite;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @keyframes gradientMove {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    #submitBtn:hover {
+      transform: translateY(-5px) scale(1.03);
+      box-shadow: 0 15px 40px rgba(255, 140, 0, 0.6);
+      animation-duration: 1s;
+    }
+
+    #submitBtn::after {
+      content: '🚀';
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      animation: rocket 2s ease-in-out infinite;
+    }
+
+    @keyframes rocket {
+      0%, 100% { transform: translateY(-50%) rotate(0deg); }
+      25% { transform: translateY(-60%) rotate(-10deg); }
+      75% { transform: translateY(-40%) rotate(10deg); }
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 140, 0, 0.1);
+      backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      animation: modalFadeIn 0.5s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 248, 220, 0.95));
+      backdrop-filter: blur(15px);
+      padding: 40px;
+      border-radius: 25px;
+      width: 90%;
+      max-width: 450px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 25px 50px rgba(255, 140, 0, 0.4);
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      animation: modalSlideIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @keyframes modalSlideIn {
+      from { transform: scale(0.7) rotate(-5deg); opacity: 0; }
+      to { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .modal::before {
+      content: '🎨';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 40px;
+      animation: modalIcon 3s ease-in-out infinite;
+    }
+
+    @keyframes modalIcon {
+      0%, 100% { transform: translateX(-50%) rotate(0deg) scale(1); }
+      33% { transform: translateX(-50%) rotate(-10deg) scale(1.1); }
+      66% { transform: translateX(-50%) rotate(10deg) scale(0.9); }
+    }
+
+    .modal img {
+      margin-top: 20px;
+      max-width: 100%;
+      border-radius: 15px;
+      animation: imageReveal 1s ease-out 0.3s both;
+      box-shadow: 0 10px 30px rgba(255, 140, 0, 0.3);
+    }
+
+    @keyframes imageReveal {
+      from { transform: scale(0.8) rotateY(90deg); opacity: 0; }
+      to { transform: scale(1) rotateY(0deg); opacity: 1; }
+    }
+
+    .modal button {
+      margin-top: 25px;
+      background: linear-gradient(135deg, #FF6B35, #DC143C);
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+    }
+
+    .modal button:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(220, 20, 60, 0.6);
+    }
+
+    .modal h3 {
+      margin-top: 10px;
+      font-family: 'Fredoka One', cursive;
+      background: linear-gradient(45deg, #FF6B35, #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 24px;
+    }
+
+    .proverb-text {
+      font-style: italic;
+      font-size: 16px;
+      color: #FF6B35;
+      background: linear-gradient(135deg, #FFF8DC, #FFEBCD);
+      padding: 15px;
+      border-radius: 12px;
+      margin: 15px 0;
+      border-left: 4px solid #FF8C00;
+      animation: proverbGlow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes proverbGlow {
+      from { box-shadow: 0 0 5px rgba(255, 140, 0, 0.3); }
+      to { box-shadow: 0 0 20px rgba(255, 140, 0, 0.6); }
+    }
+
+    /* Fun floating elements */
+    .floating-emoji {
+      position: absolute;
+      font-size: 20px;
+      animation: float 6s ease-in-out infinite;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .emoji-1 { top: 10%; left: 10%; animation-delay: 0s; }
+    .emoji-2 { top: 20%; right: 15%; animation-delay: 1s; }
+    .emoji-3 { bottom: 20%; left: 20%; animation-delay: 2s; }
+    .emoji-4 { bottom: 10%; right: 10%; animation-delay: 3s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-20px) rotate(5deg); }
+      66% { transform: translateY(10px) rotate(-5deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Floating emojis -->
+  <div class="floating-emoji emoji-1">🎭</div>
+  <div class="floating-emoji emoji-2">🌟</div>
+  <div class="floating-emoji emoji-3">🎨</div>
+  <div class="floating-emoji emoji-4">✨</div>
+
+  <div class="container">
+    <h1 class="title">🎨 Pazhamcholl Magic 🎭</h1>
+    
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('webcam')">📸 Webcam</div>
+      <div class="tab" onclick="switchTab('upload')">📁 Upload</div>
+    </div>
+
+    <!-- Webcam Tab -->
+    <div id="webcam" class="tab-content active">
+      <video id="video" autoplay playsinline width="300" height="220"></video>
+      <br />
+      <button class="capture-btn" onclick="captureFromWebcam()">📸 Capture Magic!</button>
+    </div>
+
+    <!-- Upload Tab -->
+    <div id="upload" class="tab-content">
+      <input type="file" id="fileInput" accept="image/*" />
+      <div id="imagePreview" class="image-preview-container" style="display: none;">
+        <img id="previewImage" alt="Preview" />
+        <div class="preview-overlay">
+          <span class="preview-text">✨ Ready for Magic! ✨</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Common Submit Button -->
+    <button id="submitBtn" onclick="submitImage()">✨ Create Cartoon Magic</button>
+  </div>
+
+  <!-- Popup Modal -->
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="modal">
+      <h3>🖼️ Cartoon Result</h3>
+      <p><strong>Image URL:</strong> <span id="imgUrlText"></span></p>
+      <div class="proverb-text">
+        <strong>Pazhamchollu:</strong> <em id="proverb"></em>
+      </div>
+      <img id="cartoonImage" alt="Cartoon Output" />
+      <br />
+      <button onclick="closeModal()">🚪 Close</button>
+    </div>
+  </div>
+
+  <script>
+    const webcamTab = document.getElementById('webcam');
+    const uploadTab = document.getElementById('upload');
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+    const video = document.getElementById('video');
+    const fileInput = document.getElementById('fileInput');
+    const imgUrlText = document.getElementById('imgUrlText');
+    const cartoonImage = document.getElementById('cartoonImage');
+    const proverbText = document.getElementById('proverb');
+    const modalOverlay = document.getElementById('modalOverlay');
+
+    let imageDataUrl = "";
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(() => {
+        alert("🚫 Oops! Camera shy? We need webcam access for the magic! 📸✨");
+      });
+
+    function resetWebcamView() {
+        const captureBtn = webcamTab.querySelector('.capture-btn');
+        const existingImage = document.getElementById('capturedWebcamImage');
+        
+        if (existingImage) {
+            existingImage.remove();
+        }
+
+        video.style.display = 'block';
+        captureBtn.textContent = '📸 Capture Magic!';
+        imageDataUrl = "";
+    }
+
+    function switchTab(tabName) {
+      if (tabName === 'upload') {
+        fileInput.style.display = 'block';
+        fileInput.value = '';
+        document.getElementById('imagePreview').style.display = 'none';
+        imageDataUrl = '';
+      } else if (tabName === 'webcam') {
+        resetWebcamView();
+      }
+      
+      tabs.forEach(tab => tab.classList.remove('active'));
+      contents.forEach(content => content.classList.remove('active'));
+      document.querySelector(`.tab[onclick*="${tabName}"]`).classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+      
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+    }
+
+    function captureFromWebcam() {
+      const captureBtn = webcamTab.querySelector('.capture-btn');
+      
+      if (captureBtn.textContent.includes('Retake')) {
+          resetWebcamView();
+          return;
+      }
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      canvas.height = 220;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      imageDataUrl = canvas.toDataURL('image/png');
+      
+      const capturedImg = document.createElement('img');
+      capturedImg.id = 'capturedWebcamImage';
+      capturedImg.src = imageDataUrl;
+      
+      video.style.display = 'none';
+      webcamTab.insertBefore(capturedImg, captureBtn);
+
+      captureBtn.textContent = '📸 Retake Magic!';
+      
+      showEmojiExplosion();
+    }
+
+    fileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const previewContainer = document.getElementById('imagePreview');
+          const previewImage = document.getElementById('previewImage');
+          
+          fileInput.style.display = 'none';
+          previewImage.src = e.target.result;
+          previewContainer.style.display = 'block';
+          
+          imageDataUrl = e.target.result;
+          
+          showEmojiExplosion();
+          if (navigator.vibrate) {
+            navigator.vibrate([100, 50, 100]);
+          }
+        };
+        reader.readAsDataURL(file);
+      } else {
+        document.getElementById('imagePreview').style.display = 'none';
+        imageDataUrl = "";
+      }
+    });
+
+    async function submitImage() {
+      const activeTab = document.querySelector('.tab.active').textContent.toLowerCase();
+
+      if (!imageDataUrl) {
+          if (activeTab.includes('upload')) {
+            alert("🖼️ Please upload an image first! We need something to work our magic on! ✨");
+          } else {
+            alert("📸 Oops! Please capture a photo first! 🎨");
+          }
+          return;
+      }
+
+      // Convert DataURL to Blob
+      function dataURLtoBlob(dataurl) {
+        const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+          bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        for (let i = 0; i < n; i++) u8arr[i] = bstr.charCodeAt(i);
+        return new Blob([u8arr], { type: mime });
+      }
+
+      const blob = dataURLtoBlob(imageDataUrl);
+      const formData = new FormData();
+      formData.append('file', blob, 'image.png');
+
+      // Post to FastAPI backend
+      let filename = '';
+      try {
+        const response = await fetch('http://localhost:8000/upload_image', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await response.json();
+        if (response.ok) {
+          filename = result.filename;
+          imgUrlText.textContent = filename;
+        } else {
+          alert(result.error || "Upload failed!");
+          return;
+        }
+      } catch (err) {
+        alert("Failed to connect to backend!");
+        return;
+      }
+
+      cartoonImage.src = "https://api.dicebear.com/8.x/bottts/svg?seed=" + Math.floor(Math.random() * 99999);
+      proverbText.textContent = getRandomPazhamchollu();
+      modalOverlay.style.display = "flex";
+      
+      document.body.style.animation = "shake 0.5s ease-in-out";
+      setTimeout(() => {
+        document.body.style.animation = "";
+      }, 500);
+    }
+
+    function closeModal() {
+      modalOverlay.style.display = "none";
+    }
+
+    function getRandomPazhamchollu() {
+      const list = [
+        "🥥 മുട്ടിയില്ലെങ്കിൽ ചുണ്ടിന് രുചിയില്ല! 😋",
+        "🐘 ആന വന്നാൽ പാമ്പിനെ മറക്കും! 🐍",
+        "🐟 പാറയടിയിലല്ലാതെ മീനില്ല! 🪨",
+        "🐱 പൂച്ചയ്ക്ക് പാൽ കാണിച്ചാൽ കുടിക്കും! 🥛",
+        "🦎 തലയോടൊപ്പം വാലും പോകും! ✨",
+        "🌧️ മഴ കണ്ടാൽ കുട തുറക്കും! ☂️",
+        "🦅 പരുന്ത് കണ്ടാൽ കോഴി ഓടും! 🐔"
+      ];
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function showEmojiExplosion() {
+      const emojis = ['🎉', '✨', '🎊', '⭐', '💫', '🌟'];
+      for (let i = 0; i < 10; i++) {
+        createFloatingEmoji(emojis[Math.floor(Math.random() * emojis.length)]);
+      }
+    }
+
+    function createFloatingEmoji(emoji) {
+      const span = document.createElement('span');
+      span.textContent = emoji;
+      span.style.position = 'fixed';
+      span.style.left = Math.random() * window.innerWidth + 'px';
+      span.style.top = Math.random() * window.innerHeight + 'px';
+      span.style.fontSize = '24px';
+      span.style.pointerEvents = 'none';
+      span.style.zIndex = '9999';
+      span.style.animation = 'explode 2s ease-out forwards';
+      
+      document.body.appendChild(span);
+      
+      setTimeout(() => {
+        span.remove();
+      }, 2000);
+    }
+
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes explode {
+        0% { transform: scale(0) rotate(0deg); opacity: 1; }
+        50% { transform: scale(1.5) rotate(180deg); opacity: 0.8; }
+        100% { transform: scale(0.5) rotate(360deg); opacity: 0; }
+      }
+      
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    document.addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON' || e.target.classList.contains('tab')) {
+        const ripple = document.createElement('span');
+        ripple.style.position = 'absolute';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(255, 215, 0, 0.6)';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.animation = 'ripple 0.6s linear';
+        ripple.style.left = (e.pageX - 10) + 'px';
+        ripple.style.top = (e.pageY - 10) + 'px';
+        ripple.style.width = '20px';
+        ripple.style.height = '20px';
+        ripple.style.pointerEvents = 'none';
+        ripple.style.zIndex = '9999';
+        
+        document.body.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      }
+    });
+
+    style.textContent += `
+      @keyframes ripple {
+        to { transform: scale(4); opacity: 0; }
+      }
+    `;
+  </script>
+</body>
+</html>

@@ -667,59 +667,57 @@
       }
     });
 
-    async function submitImage() {
-      const activeTab = document.querySelector('.tab.active').textContent.toLowerCase();
+  async function submitImage() {
+  const activeTab = document.querySelector('.tab.active').textContent.toLowerCase();
 
-      if (!imageDataUrl) {
-          if (activeTab.includes('upload')) {
-            alert("🖼️ Please upload an image first! We need something to work our magic on! ✨");
-          } else {
-            alert("📸 Oops! Please capture a photo first! 🎨");
-          }
-          return;
+  if (!imageDataUrl) {
+      if (activeTab.includes('upload')) {
+        alert("🖼️ Please upload an image first! We need something to work our magic on! ✨");
+      } else {
+        alert("📸 Oops! Please capture a photo first! 🎨");
       }
+      return;
+  }
 
-      // Convert DataURL to Blob
-      function dataURLtoBlob(dataurl) {
-        const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-          bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-        for (let i = 0; i < n; i++) u8arr[i] = bstr.charCodeAt(i);
-        return new Blob([u8arr], { type: mime });
-      }
+  function dataURLtoBlob(dataurl) {
+    const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    for (let i = 0; i < n; i++) u8arr[i] = bstr.charCodeAt(i);
+    return new Blob([u8arr], { type: mime });
+  }
 
-      const blob = dataURLtoBlob(imageDataUrl);
-      const formData = new FormData();
-      formData.append('file', blob, 'image.png');
+  const blob = dataURLtoBlob(imageDataUrl);
+  const formData = new FormData();
+  formData.append('file', blob, 'image.png');
 
-      // Post to FastAPI backend
-      let filename = '';
-      try {
-        const response = await fetch('http://localhost:8000/upload_image', {
-          method: 'POST',
-          body: formData
-        });
-        const result = await response.json();
-        if (response.ok) {
-          filename = result.filename;
-          imgUrlText.textContent = filename;
-        } else {
-          alert(result.error || "Upload failed!");
-          return;
-        }
-      } catch (err) {
-        alert("Failed to connect to backend!");
-        return;
-      }
+  let filename = '';
+  try {
+    const response = await fetch('http://localhost:8000/upload_image', {
+      method: 'POST',
+      body: formData
+    });
+    const result = await response.json();
+    if (response.ok) {
+      filename = result.filename;
+      imgUrlText.textContent = filename;
 
-      cartoonImage.src = "https://api.dicebear.com/8.x/bottts/svg?seed=" + Math.floor(Math.random() * 99999);
-      proverbText.textContent = getRandomPazhamchollu();
+      // Set image and pazhamcholl from backend
+      cartoonImage.src = `http://localhost:8000/static/edited_${filename}`;
+      proverbText.textContent = result.banana;
+
+      // Show modal
       modalOverlay.style.display = "flex";
-      
       document.body.style.animation = "shake 0.5s ease-in-out";
       setTimeout(() => {
         document.body.style.animation = "";
       }, 500);
+    } else {
+      alert(result.error || "Upload failed!");
     }
+  } catch (err) {
+    alert("Failed to connect to backend!");
+  }
+}
 
     function closeModal() {
       modalOverlay.style.display = "none";

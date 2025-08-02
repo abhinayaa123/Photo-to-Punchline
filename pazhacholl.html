@@ -703,7 +703,7 @@
   loadingSpinner.style.display = "block"; // Show loading
 
   try {
-    const response = await fetch('http://localhost:8000/upload_image', {
+    const response = await fetch('upload_image', {
       method: 'POST',
       body: formData
     });
@@ -711,7 +711,7 @@
 
     if (response.ok) {
       filename = result.filename;
-      cartoonImage.src = `http://localhost:8000/static/edited_${filename}`;
+      cartoonImage.src = `static/edited_${filename}`;
       proverbText.textContent = result.banana;
 
       modalOverlay.style.display = "flex";

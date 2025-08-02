@@ -506,6 +506,14 @@
       33% { transform: translateY(-20px) rotate(5deg); }
       66% { transform: translateY(10px) rotate(-5deg); }
     }
+    #loadingSpinner {
+  font-family: 'Segoe UI', sans-serif;
+  color: #444;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 20px 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
   </style>
 </head>
 <body>
@@ -669,14 +677,15 @@
 
   async function submitImage() {
   const activeTab = document.querySelector('.tab.active').textContent.toLowerCase();
+  const loadingSpinner = document.getElementById('loadingSpinner');
 
   if (!imageDataUrl) {
-      if (activeTab.includes('upload')) {
-        alert("🖼️ Please upload an image first! We need something to work our magic on! ✨");
-      } else {
-        alert("📸 Oops! Please capture a photo first! 🎨");
-      }
-      return;
+    if (activeTab.includes('upload')) {
+      alert("🖼️ Please upload an image first! We need something to work our magic on! ✨");
+    } else {
+      alert("📸 Oops! Please capture a photo first! 🎨");
+    }
+    return;
   }
 
   function dataURLtoBlob(dataurl) {
@@ -691,21 +700,20 @@
   formData.append('file', blob, 'image.png');
 
   let filename = '';
+  loadingSpinner.style.display = "block"; // Show loading
+
   try {
     const response = await fetch('http://localhost:8000/upload_image', {
       method: 'POST',
       body: formData
     });
     const result = await response.json();
+
     if (response.ok) {
       filename = result.filename;
-      imgUrlText.textContent = filename;
-
-      // Set image and pazhamcholl from backend
       cartoonImage.src = `http://localhost:8000/static/edited_${filename}`;
       proverbText.textContent = result.banana;
 
-      // Show modal
       modalOverlay.style.display = "flex";
       document.body.style.animation = "shake 0.5s ease-in-out";
       setTimeout(() => {
@@ -716,6 +724,8 @@
     }
   } catch (err) {
     alert("Failed to connect to backend!");
+  } finally {
+    loadingSpinner.style.display = "none"; // Hide loading
   }
 }
 
@@ -806,5 +816,8 @@
       }
     `;
   </script>
+  <div id="loadingSpinner" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:10000;">
+  <div style="font-size: 32px;">⏳ Magic in progress...</div>
+</div>
 </body>
 </html>

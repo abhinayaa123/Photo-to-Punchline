@@ -93,8 +93,8 @@ For Software:
 [https://pazhamchollmagic.onrender.com/]
 
 ## Team Contributions
-- [Jinsha Prasad]: [Developer]
-- [Abhinaya KP]: [Developer]
+- Jinsha Prasad: [Developer]
+- Abhinaya KP: [Developer]
 
 
 ---
